@@ -6,7 +6,6 @@ from typing import Optional
 import pendulum
 from pendulum.date import Date
 import requests
-from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 
 try:
@@ -115,7 +114,6 @@ def main():
         end_time = pendulum.now(tz="UTC") + pendulum.duration(1)
 
     session = requests.session()
-    session.auth = HTTPBasicAuth(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"))
 
     metric_name = "price_electricity"
 
