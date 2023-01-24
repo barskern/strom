@@ -103,7 +103,7 @@ def main():
         logging.info("Did not get any timestamps, running from last metric (if exists) to now")
 
         start_time = None
-        end_time = pendulum.now(tz="UTC")
+        end_time = pendulum.now(tz="UTC") + pendulum.duration(1)
 
     session = requests.session()
     session.auth = HTTPBasicAuth(os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"))
