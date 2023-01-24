@@ -16,7 +16,7 @@ try:
 except:
     pass
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("strom")
 
 PRICE_AREA = "NO1"
 
@@ -99,15 +99,15 @@ def main():
     PROMSCALE_CERT_PATH = os.getenv("PROMSCALE_CERT_PATH")
 
     if PROMSCALE_CERT_PATH:
-        logging.info(f"Using '{PROMSCALE_CERT_PATH}' as promscale certificate")
+        logger.info(f"Using '{PROMSCALE_CERT_PATH}' as promscale certificate")
     else:
-        logging.info("Will not verify certificate")
+        logger.info("Will not verify certificate")
 
     if len(sys.argv) >= 3:
         start_time = pendulum.parse(sys.argv[1])
         end_time = pendulum.parse(sys.argv[2])
     else:
-        logging.info(
+        logger.info(
             "Did not get any timestamps, running from last metric (if exists) to now"
         )
 
@@ -124,31 +124,31 @@ def main():
             start_time if start_time else get_last_timestamp_in_metric(metric_name)
         )
         if end_time < start_time_:
-            logging.warning("Have a future (?) value in promscale, something is off..")
+            logger.warning("Have a future (?) value in promscale, something is off..")
             return
 
-        logging.info(
+        logger.info(
             f"Fetching electricity prices from '{start_time_.to_date_string()}' to '{end_time.to_date_string()}'"
         )
         timeseries = get_strom_timeseries(
             session, metric_name, PRICE_AREA, start_time_, end_time
         )
-        logging.info(f"Got {len(timeseries['samples'])} samples")
+        logger.info(f"Got {len(timeseries['samples'])} samples")
 
-        logging.info(f"Sending samples to promscale")
+        logger.info(f"Sending samples to promscale")
         res = requests.post(
             PROMSCALE_WRITE_URL,
             json=timeseries,
             verify=PROMSCALE_CERT_PATH if PROMSCALE_CERT_PATH else False,
         )
         if 200 <= res.status_code < 300:
-            logging.info(f"Successfully ingested electricity price samples")
+            logger.info(f"Successfully ingested electricity price samples")
         else:
-            logging.error(
+            logger.error(
                 f"Unable to ingest electricity price samples, got '{res.status_code}'"
             )
     except Exception as e:
-        logging.error(f"Unable to fetch data for '{metric_name}': {e}")
+        logger.error(f"Unable to fetch data for '{metric_name}': {e}")
         exit(1)
 
 
