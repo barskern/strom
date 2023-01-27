@@ -24,6 +24,9 @@ tqdm = "^4.64.1"
 scipy = "^1.9.3"
 numpy = "^1.23.5"
 
+[tool.poetry.scripts]
+strom_fetch = "strom.fetch_prices:main"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
