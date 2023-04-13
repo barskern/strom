@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 try:
     import requests_cache
 
-#    requests_cache.install_cache("strom")
+    requests_cache.install_cache("strom")
 except:
     pass
 
