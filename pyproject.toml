@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "strom"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Ole Martin Ruud <dev@barskern.no>"]
 readme = "README.md"

@@ -37,7 +37,7 @@ def get_strom_timeseries(
     end_date = to_time if to_time else pendulum.now("utc").date()
 
     datas = []
-    date_range = pendulum.period(start_date, end_date).range("days")
+    date_range = pendulum.interval(start_date, end_date).range("days")
     for date in date_range:
         url = BASE_URL.format(
             year=date.year, month=date.month, day=date.day, price_area=price_area
