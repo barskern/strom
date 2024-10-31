@@ -17,7 +17,7 @@ except:
 
 logger = logging.getLogger("strom")
 
-PRICE_AREA = "NO1"
+DEFAULT_PRICE_AREA = "NO1"
 
 BASE_URL = "https://www.hvakosterstrommen.no/api/v1/prices/{year}/{month:0>2}-{day:0>2}_{price_area}.json"
 
@@ -93,9 +93,8 @@ def get_last_timestamp_in_metric(metric_name: str, lookback: str = "1d"):
         if lookback != "30d":
             return get_last_timestamp_in_metric(metric_name, "30d")
 
-        raise RuntimeError(
-            f"Query to get last metric timestamp returned nothing"
-        ) from e
+        logger.warning("Query to get last metric timestamp returned nothing, using current month start..")
+        return pendulum.now().start_of('month')
 
     last_metric_timestamp = pendulum.from_timestamp(float(timestamp_s))
 
@@ -108,6 +107,9 @@ def main():
 
     global PROMSCALE_CERT_PATH
     PROMSCALE_CERT_PATH = os.getenv("PROMSCALE_CERT_PATH")
+
+    global PRICE_AREA
+    PRICE_AREA = os.getenv("PRICE_AREA") or DEFAULT_PRICE_AREA
 
     if PROMSCALE_CERT_PATH:
         logger.info(f"Using '{PROMSCALE_CERT_PATH}' as promscale certificate")
